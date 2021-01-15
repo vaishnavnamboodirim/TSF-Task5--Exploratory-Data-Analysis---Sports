@@ -1,0 +1,94 @@
+Exploratory Data Analysis - Sports (Level - Advanced)
+Perform ‘Exploratory Data Analysis’ on dataset ‘Indian Premier League’
+● As a sports analysts, find out the most successful teams, players and factors
+contributing win or loss of a team.
+● Suggest teams or players a company should endorse for its products.
+● You can choose any of the tool of your choice
+
+options(repos = c(CRAN = 'https://cloud.r-project.org'))
+install.packages('dplyr', repos = 'https://cloud.r-project.org')
+install.packages("readxl")
+library(readxl)
+install.packages("thePackage")
+install.packages("tidyverse")
+install.packages("dplyr")
+library(tidyverse)
+library(dplyr)
+rm(list = ls())
+library(data.table)
+library(tibble)
+library(ggplot2)
+library(tidyr)
+library(ggplot2)
+install.packages("viridis")
+library(viridis)
+library(hrbrthemes)
+library(RColorBrewer)
+coul=brewer.pal(12,"Set3")
+setwd("C:/Users/acer/Desktop/DataAnalytics")
+getwd()
+data1 <- fread("matches.csv") 
+data2 <- fread("deliveries.csv")
+head(data2)
+data1_matcheswon<-data1 %>% arrange(season) %>%filter(!str_detect(result,"tie")) %>% group_by(season,winner) %>% summarise(n=n())
+ggplot(data1_matcheswon, aes(fill=winner, y=n, x=winner)) + 
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_viridis(discrete = T, option = "E") +
+  ggtitle("Yeear wise winnings") +
+  facet_wrap(~season) +
+  theme_ipsum() +
+  theme(axis.text.x = element_text(angle=90,hjust=0.5,vjust=0.5,size = 7))+
+  xlab("")
+p<-data1 %>% count(winner)
+barplot(height = p$n, names = p$winner,col=coul,las=2,cex.names = .55)
+
+########details of bowler
+data22<-data2 %>% filter(str_detect(player_dismissed,""))
+data22<-data22 %>% group_by(bowler,player_dismissed) %>% summarise(n=n())
+data222<-data22%>% group_by(bowler) %>% summarise(n=n())
+d<-arrange(data222,desc(n), n = 20)
+barplot(height = d$n, names = d$bowler,col=coul,las=2,cex.names = .55)
+s<-s %>% group_by(bowler,n) %>% summarise(N=sum(n))
+head(s)
+
+#############details of batsmen
+data22<-data2 %>% filter(str_detect(batsman_runs,""))
+data22<-data22 %>% group_by(batsman,batsman_runs) %>% summarise(n=sum(batsman_runs))
+data222<-data22%>% group_by(batsman) %>% summarise(totRuns=sum(n))
+d<-arrange(data222,desc(totRuns))
+head(d)
+barplot(height = d[1:15,]$totRuns, names = d[1:15,]$batsman,col=coul,las=2,cex.names = .55)
+
+
+
+barplot(height = d[1:15,]$n, names = d[1:15,]$batsman,col=coul,las=2,cex.names = .55)
+s<-s %>% group_by(bowler,n) %>% summarise(N=sum(n))
+head(s)
+
+
+#######details of most man of the match after 2017
+data11<-data1 %>% filter(str_detect(player_of_match,""))
+data11<-data11 %>% group_by(season,player_of_match) %>% summarise(n=n())
+data11<-data11 %>% filter(season >= "2017")
+d<-arrange(data11,desc(n))
+p<-d[1:15,]
+barplot(height = d[1:15,]$n, names = d[1:15,]$player_of_match,col=coul,las=2,cex.names = .55)
+
+
+
+########details of most man of the match overall by season,
+data11<-data1 %>% filter(str_detect(player_of_match,""))
+data11<-data11 %>% group_by(season,player_of_match) %>% summarise(n=n())
+head(data11)
+d<-arrange(data11,desc(n))
+barplot(height = d[1:15,]$n, names = d[1:15,]$player_of_match,col=coul,las=2,cex.names = .55)
+
+
+########details of most man of the match overall
+data11<-data1 %>% filter(str_detect(player_of_match,""))
+data112<-data11 %>% group_by(player_of_match) %>% summarise(n=n())
+d<-arrange(data112,desc(n))
+head(d)
+barplot(height = d[1:15,]$n, names = d[1:15,]$player_of_match,col=coul,las=2,cex.names = .55)
+
+
